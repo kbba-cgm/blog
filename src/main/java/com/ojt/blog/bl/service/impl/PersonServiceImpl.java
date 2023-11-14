@@ -5,11 +5,17 @@ import com.ojt.blog.bl.service.PersonService;
 import com.ojt.blog.persistence.entity.Person;
 import com.ojt.blog.persistence.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-@Primary
+@Qualifier("personService")
 public class PersonServiceImpl implements PersonService {
     @Autowired
     PersonRepository personRepository;
@@ -28,5 +34,22 @@ public class PersonServiceImpl implements PersonService {
         personDTO.setName(modifiedName);
         Person person = new Person(personDTO);
         personRepository.save(person);
+    }
+
+    /**
+     * <h2>Get Person List</h2>
+     * <p>Getting person data list from DB</p>
+     *
+     * @return void
+     */
+    public List<PersonDTO> getPersonList() {
+        List<Person> personList = personRepository.findAll();
+        List<PersonDTO> personDTOList = personList.stream().map(person -> new PersonDTO(person)).toList();
+        return personDTOList;
+    }
+
+    @Override
+    public Page<Person> getPageablePersonList(Pageable pageable) {
+        return personRepository.findAll(pageable);
     }
 }

@@ -10,7 +10,15 @@
 <form th:action="@{/person/create}" method="post" th:object="${person}">
     <label>Username:</label>
     <input type="text" th:field="*{name}" /><br/>
+    <p th:if="${#fields.hasErrors('${person.name}')}" th:errors="*{name}"></p> <br>
+                                                            <!-- ${person.name}   -->
     <button type="submit">Register</button>
+</form>
+
+<form th:action="@{/person/excel-import}" method="post" enctype="multipart/form-data">
+    <label>Excel Data:</label>
+    <input type="file" name="personFile" /><br/>
+    <button type="submit">Import</button>
 </form>
 </body>
 </html>
